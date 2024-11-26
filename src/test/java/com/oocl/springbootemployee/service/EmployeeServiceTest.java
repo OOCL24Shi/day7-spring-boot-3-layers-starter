@@ -9,9 +9,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 
 class EmployeeServiceTest {
     @Test
@@ -42,5 +43,33 @@ class EmployeeServiceTest {
 
         //then
         assertEquals("Lucy", createdEmployee.getName());
+    }
+
+    //employees those who are not 18-65 years old cannot be created
+    //employees over 30 years of age (inclusive) with a salary below 20000 cannot be created
+    @Test
+    void should_return_error_when_create_given_age_less_than_18() {
+        //Given
+        EmployeeRepository mockEmployeeRepository = mock(EmployeeRepository.class);
+        Employee lucy = new Employee(1, "Lucy", 6, Gender.FEMALE, 8000.0);
+        EmployeeService employeeService = new EmployeeService(mockEmployeeRepository);
+        //When
+
+        //Then
+        assertThrows(EmployeeAgeNotValidException.class, () -> employeeService.creat(lucy));
+        verify(mockEmployeeRepository, never()).addEmployee(any());
+    }
+
+    @Test
+    void should_return_error_when_create_given_age_higher_than_65() {
+        //Given
+        EmployeeRepository mockEmployeeRepository = mock(EmployeeRepository.class);
+        Employee lucy = new Employee(1, "Lucy", 68, Gender.FEMALE, 8000.0);
+        EmployeeService employeeService = new EmployeeService(mockEmployeeRepository);
+        //When
+
+        //Then
+        assertThrows(EmployeeAgeNotValidException.class, () -> employeeService.creat(lucy));
+        verify(mockEmployeeRepository, never()).addEmployee(any());
     }
 }
