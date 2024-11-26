@@ -72,4 +72,18 @@ class EmployeeServiceTest {
         assertThrows(EmployeeAgeNotValidException.class, () -> employeeService.creat(lucy));
         verify(mockEmployeeRepository, never()).addEmployee(any());
     }
+
+    @Test
+    void should_return_error_when_create_given_age_higher_than_30_and_salary_lower_than_20000 (){
+        //Given
+        EmployeeRepository mockEmployeeRepository = mock(EmployeeRepository.class);
+        Employee lucy = new Employee(1, "Lucy", 35, Gender.FEMALE, 8000.0);
+        EmployeeService employeeService = new EmployeeService(mockEmployeeRepository);
+        //When
+
+        //Then
+        assertThrows(EmployeeAgeSalaryNotValidException.class,() -> employeeService.creat(lucy));
+        verify(mockEmployeeRepository,never()).addEmployee(any());
+    }
+
 }
